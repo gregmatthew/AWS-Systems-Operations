@@ -1,0 +1,158 @@
+168-[JAWS]-Activity - Install and Configure the AWS CLI
+Install and Configure the AWS CLI Lab
+Lab Overview
+The AWS Command Line Interface (AWS CLI) is a command-line tool that provides an interface for interacting with Amazon Web Services (AWS) products and services. This lab guides you through installing and configuring the AWS CLI on a Red Hat Linux Amazon EC2 instance, which does not have the AWS CLI pre-installed (unlike Amazon Linux instances). You will:
+
+Establish a Secure Shell (SSH) connection to the EC2 instance.
+Install the AWS CLI using an access key to connect to an AWS account.
+Use the AWS CLI to interact with AWS Identity and Access Management (IAM).
+
+The resulting setup allows you to access the AWS Cloud via an SSH connection to a Red Hat EC2 instance within a Virtual Private Cloud (VPC), with the AWS CLI configured to interact with IAM.
+Duration: Approximately 45 minutes.
+Objectives
+After completing this lab, you will be able to:
+
+Install and configure the AWS CLI.
+Connect the AWS CLI to an AWS account.
+Access IAM using the AWS CLI.
+
+Prerequisites
+
+Access to the AWS Management Console.
+An EC2 instance running Red Hat Linux.
+SSH client (PuTTY for Windows, terminal for macOS/Linux).
+
+Accessing the AWS Management Console
+
+Choose Start Lab at the top of the lab instructions.
+Wait for the "Lab status: ready" message, then close the Start Lab panel by choosing X.
+Select AWS next to Start Lab to open the AWS Management Console in a new browser tab (auto-signed in).
+Tip: If the tab doesn’t open, check for a browser pop-up blocker and allow pop-ups.
+
+
+Arrange the AWS Management Console alongside the lab instructions.
+Important: Do not change the lab Region unless instructed.
+
+
+
+Task 1: Connect to the Red Hat EC2 Instance Using SSH
+Windows Users
+
+From the Details dropdown menu, select Show to open the Credentials window.
+Click Download PPK and save the labsuser.ppk file (typically to the Downloads directory).
+Note the Public IP address.
+Close the Details panel by selecting X.
+If not installed, download PuTTY from here.
+Open putty.exe and configure the session following AWS documentation for connecting to a Linux instance using PuTTY.
+
+macOS and Linux Users
+
+From the Details dropdown menu, select Show to open the Credentials window.
+Click Download PEM and save the labsuser.pem file.
+Copy the Public IP address to a text editor.
+Close the Details panel by selecting X.
+Open a terminal and navigate to the directory containing labsuser.pem:cd ~/Downloads
+
+
+Set read-only permissions for the key:chmod 400 labsuser.pem
+
+
+Connect to the EC2 instance, replacing <ip-address> with the Public IP:ssh -i labsuser.pem ec2-user@<ip-address>
+
+
+When prompted, type yes to connect. No password is required as the key pair is used for authentication.
+
+Task 2: Install the AWS CLI on the Red Hat Linux Instance
+
+Download the AWS CLI installer:curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+
+
+Unzip the installer, overwriting existing files if prompted:unzip -u awscliv2.zip
+
+
+Install the AWS CLI with sudo permissions:sudo ./aws/install
+
+
+Verify the installation:aws --version
+
+Expected output example:aws-cli/2.7.24 Python/3.8.8 Linux/4.14.133-113.105.amzn2.x86_64 botocore/2.4.5
+
+
+Display AWS CLI help information:aws help
+
+
+At the : prompt, type q to exit.
+
+Task 3: Observe IAM Configuration Details in the AWS Management Console
+
+In the AWS Management Console, search for IAM and select it to open the IAM console.
+Note: Ignore any permission-related messages on the IAM page.
+
+
+In the navigation pane, select Users, then choose awsstudent.
+On the Permissions tab, expand lab_policy, and click the JSON button to view the JSON-formatted IAM policy.
+Switch to the Security credentials tab and locate the access key ID for the awsstudent user.
+Note: The access key ID and secret access key are available in the Details dropdown at the top of the lab instructions.
+
+
+
+Task 4: Configure the AWS CLI to Connect to Your AWS Account
+
+In the SSH terminal, configure the AWS CLI:aws configure
+
+
+Enter the following at the prompts:
+AWS Access Key ID: Copy from the Details dropdown (Accesskey).
+AWS Secret Access Key: Copy from the Details dropdown (SecretKey).
+Default region name: us-west-2
+Default output format: json
+
+
+
+Task 5: Observe IAM Configuration Details Using the AWS CLI
+
+Test the IAM configuration by listing IAM users:aws iam list-users
+
+A successful response displays a JSON list of IAM users in the account.
+
+Activity 1 Challenge: Download the lab_policy Document Using the AWS CLI
+Use the AWS CLI to download the lab_policy document as a JSON-formatted IAM policy, matching the one viewed in the AWS Management Console. Avoid using the Console.
+Tips
+
+Refer to the IAM AWS CLI Command Reference.
+Use a command to list policies, filtering by --scope Local for customer-managed policies.
+Use a command to retrieve a policy version, specifying the version number.
+Save output to a file using the > operator.
+
+Solution
+
+List customer-managed policies:aws iam list-policies --scope Local
+
+
+Retrieve the lab_policy JSON document using its ARN and version ID, saving it to lab_policy.json:aws iam get-policy-version --policy-arn arn:aws:iam::038946776283:policy/lab_policy --version-id v1 > lab_policy.json
+
+
+
+Activity Summary
+You successfully:
+
+Installed the AWS CLI on a Red Hat Linux EC2 instance.
+Connected the AWS CLI to an AWS account using access keys.
+Retrieved IAM policy information using the AWS CLI.
+
+Key Takeaways
+
+The AWS CLI enables command-line management of AWS services, complementing the AWS Management Console.
+AWS CLI requires an access key ID and secret access key, while the Console uses a username and password.
+
+Conclusion
+You have completed the lab, achieving the following:
+
+Installed and configured the AWS CLI.
+Connected the AWS CLI to an AWS account.
+Accessed IAM using the AWS CLI.
+
+Lab Cleanup
+
+Choose End Lab at the top of the instructions and confirm with Yes.
+Close the End Lab panel by selecting X when the "Lab resources are terminating" message appears.
